@@ -6,7 +6,8 @@ import { Address, useAccount } from 'wagmi'
 import { getTokensList, type ERC20Token, getPopularTokens, getStableCoins, getNativeToken } from '@/utils/Tokens'
 import { useBlockchain } from '@/contexts/BlockchainContext'
 import ConnectButton from '@/components/common/ConnectButton'
-import { SwapSettings, EstimatedRateGas, TokenButton, SearchTokens } from './SwapUIElements'
+import { SwapSettings, EstimatedRateGas, TokenButton, SearchTokens, SwapDexButton } from './SwapUIElements'
+import { SwapCard } from './SwapCard'
 
 const Component = () => {
   const { blockchain } = useBlockchain()
@@ -19,18 +20,17 @@ const Component = () => {
   const [payToken, setPayToken] = useState<ERC20Token>()
   const [getToken, setGetToken] = useState<ERC20Token>()
 
-  const [payAmount, setPayAmount] = useState(0)
-  const [getAmount, setGetAmount] = useState(0)
+  const [payAmount, setPayAmount] = useState<number>()
+  const [getAmount, setGetAmount] = useState<number>()
 
-  const [payTokenBalance, setPayTokenBalance] = useState(0)
-  const [getTokenBalance, setGetTokenBalance] = useState(0)
+  const [payTokenBalance, setPayTokenBalance] = useState<number>(0)
+  const [getTokenBalance, setGetTokenBalance] = useState<number>(0)
 
-  const [slippage, setSlippage] = useState(0.1)
-  const [estimatedGas, setEstimatedGas] = useState(0)
+  const [slippage, setSlippage] = useState<number>(0.1)
+  const [estimatedGas, setEstimatedGas] = useState<number>(0)
 
   // True is changing payToken, False is changing getToken
-  const [changeMyToken, setChangeMyToken] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [changeMyToken, setChangeMyToken] = useState<boolean>(false)
 
   const [isModalOpened, modalHandler] = useDisclosure(false)
 
@@ -45,7 +45,6 @@ const Component = () => {
     } else {
       payToken == token ? swapPayGetTokens() : setGetToken(token)
     }
-    setSearchTerm('')
     setPayAmount(0)
     setGetAmount(0)
     modalHandler.close()
@@ -74,8 +73,6 @@ const Component = () => {
         changeToken={changeToken}
         isModalOpened={isModalOpened}
         modalHandler={modalHandler}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
       />
       <Group position="center" p="xl">
         <Paper shadow="md" radius="md" p="md" withBorder style={{ minWidth: 400 }}>
@@ -85,62 +82,33 @@ const Component = () => {
               <SwapSettings slippage={slippage} setSlippage={setSlippage} />
             </Group>
             <Stack>
-              <Paper radius="md" p="md" withBorder>
-                <Group position="apart">
-                  <Group position="left">
-                    <Text size="xs">You pay</Text>
-                    {payTokenBalance > 0 ? (
-                      <Button size="xs" variant="subtle" radius="xl" compact>
-                        max
-                      </Button>
-                    ) : (
-                      <></>
-                    )}
-                  </Group>
-                  <Text size="xs">Balance: {payTokenBalance}</Text>
-                </Group>
-                <Group position="apart">
-                  <TextInput variant="unstyled" value={payAmount} />
-                  <TokenButton token={payToken} myToken={true} openModal={openModal} />
-                </Group>
-                <Group position="apart">
-                  <Text size="xs" color="dimmed"></Text>
-                  <Text size="xs" color="dimmed">
-                    {payToken?.name}
-                  </Text>
-                </Group>
-              </Paper>
+              <SwapCard
+                isConnected={isConnected}
+                token={payToken}
+                myToken={true}
+                balance={payTokenBalance}
+                setBalance={setPayTokenBalance}
+                amount={payAmount}
+                setAmount={setPayAmount}
+                openModal={openModal}
+              />
               <Group position="center" style={{ margin: '-1rem' }}>
                 <ActionIcon onClick={() => swapPayGetTokens()} radius="xl">
                   <ArrowsUpDown size={16} />
                 </ActionIcon>
               </Group>
-              <Paper radius="md" p="md" withBorder>
-                <Group position="apart">
-                  <Text size="xs">You get</Text>
-                  <Text size="xs">Balance: {getTokenBalance}</Text>
-                </Group>
-                <Group position="apart">
-                  <TextInput variant="unstyled" value={getAmount} readOnly />
-                  <TokenButton token={getToken} myToken={false} openModal={openModal} />
-                </Group>
-                <Group position="apart">
-                  <Text size="xs" color="dimmed"></Text>
-                  <Text size="xs" color="dimmed">
-                    {getToken?.name}
-                  </Text>
-                </Group>
-              </Paper>
+              <SwapCard
+                isConnected={isConnected}
+                token={getToken}
+                myToken={false}
+                balance={getTokenBalance}
+                setBalance={setGetTokenBalance}
+                amount={getAmount}
+                setAmount={setGetAmount}
+                openModal={openModal}
+              />
               <EstimatedRateGas />
-              <Stack>
-                {isConnected ? (
-                  <Button size="lg" radius="xl" variant="gradient">
-                    Swap
-                  </Button>
-                ) : (
-                  <ConnectButton />
-                )}
-              </Stack>
+              <Stack>{isConnected ? <SwapDexButton /> : <ConnectButton />}</Stack>
             </Stack>
           </Stack>
         </Paper>

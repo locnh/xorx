@@ -1,6 +1,5 @@
-import React from 'react'
-import Image from 'next/image'
-import { Popover, ActionIcon, Text, TextInput, Paper, Group, Button, Modal, Stack } from '@mantine/core'
+import React, { useState } from 'react'
+import { Popover, ActionIcon, Text, TextInput, Paper, Group, Button, Modal, Stack, Image, Space } from '@mantine/core'
 import { AdjustmentsHorizontal, Percentage, GasStation, ChevronDown, Search } from 'tabler-icons-react'
 import { ERC20Token } from '@/utils/Tokens'
 
@@ -10,14 +9,13 @@ const TokenButton = (props: any) => {
   return (
     <Button
       onClick={() => openModal(myToken)}
-      leftIcon={<Image src={token?.logoURI} height={24} width={24} alt={token?.name} />}
+      leftIcon={<Image src={token?.logoURI} height={24} width={24} alt="" />}
       color="gray"
       radius="xl"
       variant="subtle"
-      uppercase
-      compact
     >
-      {token?.symbol} <ChevronDown />
+      {token?.symbol}
+      <ChevronDown size={18} />
     </Button>
   )
 }
@@ -25,6 +23,12 @@ const TokenButton = (props: any) => {
 const ChooseTokenButton = () => (
   <Button variant="light" radius="xl" compact>
     Choose token <ChevronDown />
+  </Button>
+)
+
+const SwapDexButton = () => (
+  <Button size="xl" radius="lg" variant="gradient">
+    Swap
   </Button>
 )
 
@@ -72,44 +76,43 @@ const SwapSettings = (props: any) => {
 }
 
 const SearchTokens = (props: any) => {
-  const { tokensList, isModalOpened, modalHandler, changeToken, searchTerm, setSearchTerm } = props
+  const { tokensList, isModalOpened, modalHandler, changeToken } = props
+
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
   return (
-    <Modal opened={isModalOpened} onClose={() => modalHandler.close()} withCloseButton={false} centered>
+    <Modal opened={isModalOpened} onClose={modalHandler.close} withCloseButton={false} centered>
       <Stack>
         <TextInput
           icon={<Search />}
           value={searchTerm}
           placeholder="Search name or contract address"
           onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={(e) => setSearchTerm('')}
         />
         <Group>
-          {tokensList.map((token: ERC20Token) => {
-            if (
-              searchTerm &&
-              (token.symbol.toLowerCase().search(searchTerm.toLowerCase()) !== -1 ||
-                token.address.toLowerCase().search(searchTerm.toLowerCase()) !== -1)
-            ) {
-              return (
-                <Button
-                  onClick={() => changeToken(token)}
-                  leftIcon={<Image src={token.logoURI} height={24} width={24} alt={token.name} />}
-                  color="gray"
-                  radius="xl"
-                  uppercase
-                  key={token.address}
-                >
-                  {token.symbol}
-                </Button>
-              )
-            } else {
-              return
-            }
-          })}
+          {tokensList.map((token: ERC20Token, i: any) =>
+            searchTerm.length > 2 &&
+            (token.symbol.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+              token.address.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) ? (
+              <Button
+                onClick={() => changeToken(token)}
+                leftIcon={<Image src={token.logoURI} height={24} width={24} alt="" />}
+                color="gray"
+                radius="xl"
+                uppercase
+                key={i}
+              >
+                {token.symbol}
+              </Button>
+            ) : (
+              ''
+            )
+          )}
         </Group>
       </Stack>
     </Modal>
   )
 }
 
-export { SwapSettings, EstimatedRateGas, TokenButton, ChooseTokenButton, SearchTokens }
+export { SwapSettings, EstimatedRateGas, TokenButton, ChooseTokenButton, SearchTokens, SwapDexButton }

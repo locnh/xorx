@@ -1,7 +1,6 @@
 import React from 'react'
-import Image from 'next/image'
 import Bridges from '@/utils/Bridges'
-import { Button, Menu, Anchor } from '@mantine/core'
+import { Button, Menu, Anchor, Image } from '@mantine/core'
 import { ChevronDown } from 'tabler-icons-react'
 
 const Component = () => {

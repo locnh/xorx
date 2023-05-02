@@ -1,8 +1,10 @@
 import React from 'react'
-import Image from 'next/image'
+import { Image, Anchor } from '@mantine/core'
 
-const Logo = () => {
-  return <Image src={`/images/logo.webp`} height={36} width={36} alt="Home" />
-}
+const Logo = () => (
+  <Anchor href="/">
+    <Image src="/images/logo.webp" height={30} width={30} alt="Home" />
+  </Anchor>
+)
 
 export default Logo

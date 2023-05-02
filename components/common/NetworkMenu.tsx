@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import Image from 'next/image'
-import { Button, Menu } from '@mantine/core'
+import { Button, Menu, Image } from '@mantine/core'
 import { ChevronDown, QuestionMark } from 'tabler-icons-react'
 import { Chain, getChainLogo } from '@/utils/Chains'
 import { useNetwork, useAccount } from 'wagmi'
@@ -24,7 +23,7 @@ const Component = (props: any) => {
 
   const chainLogo = blockchain ? (
     getChainLogo(blockchain) ? (
-      <Image src={getChainLogo(blockchain)} height={20} width={20} alt={blockchain.name} />
+      <Image src={getChainLogo(blockchain)} height={20} width={20} alt="" />
     ) : (
       <QuestionMark size={20} />
     )
@@ -48,7 +47,7 @@ const Component = (props: any) => {
           <Menu.Item
             key={_chain.id}
             disabled={_chain.id === blockchain.id}
-            icon={<Image src={getChainLogo(_chain)} height={20} width={20} alt={_chain.name} />}
+            icon={<Image src={getChainLogo(_chain)} height={20} width={20} alt="" />}
             onClick={() => handleNetworkChange(_chain)}
           >
             {_chain.name}
