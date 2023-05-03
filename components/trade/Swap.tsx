@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import { Group, Button, Paper, ActionIcon, Text, Stack, TextInput } from '@mantine/core'
+import { Group, Paper, ActionIcon, Text, Stack } from '@mantine/core'
 import { ArrowsUpDown } from 'tabler-icons-react'
 import { Address, useAccount } from 'wagmi'
 import { getTokensList, type ERC20Token, getPopularTokens, getStableCoins, getNativeToken } from '@/utils/Tokens'
 import { useBlockchain } from '@/contexts/BlockchainContext'
 import ConnectButton from '@/components/common/ConnectButton'
-import { SwapSettings, EstimatedRateGas, TokenButton, SearchTokens, SwapDexButton } from './SwapUIElements'
+import { SwapSettings, EstimatedRateGas, SearchTokens, SwapDexButton } from './SwapUIElements'
 import { SwapCard } from './SwapCard'
 
 const Component = () => {
   const { blockchain } = useBlockchain()
   const { address, isConnected } = useAccount()
 
-  console.log(blockchain)
+  //console.log(blockchain)
 
   const [tokensList, setTokensList] = useState<ERC20Token[]>([])
 
   const [payToken, setPayToken] = useState<ERC20Token>()
   const [getToken, setGetToken] = useState<ERC20Token>()
 
-  const [payAmount, setPayAmount] = useState<number>()
-  const [getAmount, setGetAmount] = useState<number>()
+  const [payAmount, setPayAmount] = useState<number | ''>('')
+  const [getAmount, setGetAmount] = useState<number | ''>('')
 
   const [payTokenBalance, setPayTokenBalance] = useState<number>(0)
   const [getTokenBalance, setGetTokenBalance] = useState<number>(0)
@@ -33,6 +33,9 @@ const Component = () => {
   const [changeMyToken, setChangeMyToken] = useState<boolean>(false)
 
   const [isModalOpened, modalHandler] = useDisclosure(false)
+
+  console.log('yyyy', payAmount)
+  console.log('zzzz', getAmount)
 
   const openModal = (bool: boolean) => {
     setChangeMyToken(bool)

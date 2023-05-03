@@ -5,11 +5,10 @@ import { TokenButton } from './SwapUIElements'
 const SwapCard = (props: any) => {
   const { isConnected, token, myToken, balance, setBalance, amount, setAmount, openModal } = props
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value
-    const amount = parseFloat(inputValue)
-    console.log(amount)
-    if (!isNaN(amount)) setAmount(amount)
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const parsedValue = parseFloat(event.target.value)
+    const newValue = isNaN(parsedValue) ? '' : parsedValue.toString()
+    setAmount(newValue)
   }
 
   return (
@@ -32,7 +31,15 @@ const SwapCard = (props: any) => {
         {isConnected ? <Text size="xs">Balance: {balance}</Text> : ''}
       </Group>
       <Group position="apart">
-        <TextInput type="number" onChange={handleChange} size="xl" variant="unstyled" value={amount} placeholder="0" />
+        <TextInput
+          type="number"
+          inputMode="decimal"
+          onChange={handleValueChange}
+          placeholder="0"
+          size="xl"
+          variant="unstyled"
+          value={amount}
+        />
         <TokenButton token={token} myToken={myToken} openModal={openModal} />
       </Group>
       <Group position="apart">
