@@ -4,7 +4,25 @@ import { Chain, Address, erc20ABI } from 'wagmi'
 import { getContract, getProvider } from '@wagmi/core'
 import { fee } from '@/utils/AppConfig'
 
-const POPULAR_COINS = ['ETH', 'WETH', 'WBTC', 'BNB', 'WBNB', 'USDT', 'USDC', 'DOT', 'LTC']
+const POPULAR_COINS = [
+  'ETH',
+  'WETH',
+  'WBTC',
+  'BNB',
+  'WBNB',
+  'USDT',
+  'USDC',
+  'BUSD',
+  'DAI',
+  'DOT',
+  'LTC',
+  'SOL',
+  'SHIB',
+  'LINK',
+  'UNI',
+  'FIL',
+  'NEAR',
+]
 const STABLE_COINS = ['USDT', 'USDC']
 
 export interface ERC20Token {
