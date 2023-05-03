@@ -7,6 +7,8 @@ import { type DEXQuote, getTokenRate } from '@/utils/Tokens'
 const QuoteRate = (props: any) => {
   const { payToken, payAmount, getToken, setGetAmount } = props
 
+  const fee = process.env.FEE ? parseFloat(process.env.FEE) : 0
+
   const { blockchain } = useBlockchain()
 
   const [quote, setQuote] = useState<DEXQuote>({
@@ -17,13 +19,13 @@ const QuoteRate = (props: any) => {
 
   useEffect(() => {
     const fetchRate = async () => {
-      if (payToken && getToken && payAmount) {
-        const data: DEXQuote = await getTokenRate(payToken, getToken, blockchain)
+      if (payToken && getToken) {
+        const data: DEXQuote = await getTokenRate(payToken, getToken, blockchain, fee)
         if (data.rate) setQuote(data)
       }
     }
     fetchRate()
-  }, [payToken, getToken, blockchain, payAmount])
+  }, [payToken, getToken])
 
   useEffect(() => {
     const _amount = (payAmount * quote.rate) / 10 ** getToken?.decimals

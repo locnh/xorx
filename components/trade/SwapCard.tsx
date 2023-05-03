@@ -15,7 +15,7 @@ const SwapCard = (props: any) => {
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const parsedValue = parseFloat(event.target.value)
-    const newValue = isNaN(parsedValue) ? '' : parsedValue.toString()
+    const newValue = isNaN(parsedValue) ? '0' : parsedValue.toString()
     setAmount(newValue)
   }
 
@@ -27,13 +27,13 @@ const SwapCard = (props: any) => {
   useEffect(() => {
     const fetchBalance = async () => {
       if (address) {
-        const data: Balance = await getBalance(address, token, blockchain)
+        const data: Balance = await getBalance(address, token)
         if (data.formatted) setBalance(Number(data.formatted))
       }
     }
 
     fetchBalance()
-  }, [token, address, blockchain])
+  }, [token])
 
   return (
     <Paper radius="md" p="md" withBorder>

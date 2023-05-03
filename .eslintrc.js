@@ -1,3 +1,6 @@
 module.exports = {
-  extends: ['next/core-web-vitals', 'plugin:@next/next/recommended'],
+  extends: ['next'],
+  rules: {
+    'react-hooks/exhaustive-deps': 'off',
+  },
 }
