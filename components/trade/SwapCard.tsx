@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { Paper, Group, Text, Button, TextInput } from '@mantine/core'
 import { TokenButton } from './SwapUIElements'
 import { getBalance, type Balance } from '@/utils/Accounts'
+import { useBlockchain } from '@/contexts/BlockchainContext'
 import { getNativeToken, getStableCoins, getCoinPrice } from '@/utils/Tokens'
 import { formatNumber } from '@/utils/Formatter'
 import { useAccount } from 'wagmi'
@@ -9,6 +10,7 @@ import { useAccount } from 'wagmi'
 const SwapCard = (props: any) => {
   const { tokensList, token, setToken, myToken, amount, setAmount, openModal } = props
   const { address, isConnected } = useAccount()
+  const { blockchain } = useBlockchain()
 
   const [priceUSD, setPriceUSD] = useState<number>(0)
 
@@ -35,7 +37,7 @@ const SwapCard = (props: any) => {
   useEffect(() => {
     setToken(myToken ? getNativeToken(tokensList)[0] : getStableCoins(tokensList)[0])
     setAmount('')
-  }, [tokensList, myToken, setAmount, setToken])
+  }, [tokensList, myToken, setAmount, setToken, blockchain, address])
 
   useEffect(() => {
     const fetchBalance = async () => {
