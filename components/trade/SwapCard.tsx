@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Paper, Group, Text, Button, TextInput } from '@mantine/core'
 import { TokenButton } from './SwapUIElements'
 import { getBalance, type Balance } from '@/utils/Accounts'
 import { useBlockchain } from '@/contexts/BlockchainContext'
-import { getNativeToken, getStableCoins } from '@/utils/Tokens'
+import { getNativeToken, getStableCoins, getCoinPrice } from '@/utils/Tokens'
+import { formatNumber } from '@/utils/Formatter'
 import { useAccount } from 'wagmi'
 
 const SwapCard = (props: any) => {
   const { tokensList, token, setToken, myToken, amount, setAmount, openModal } = props
   const { address, isConnected } = useAccount()
   const { blockchain } = useBlockchain()
+
+  const [priceUSD, setPriceUSD] = useState<number>(0)
 
   const [balance, setBalance] = useState<number>(0)
 
@@ -18,6 +21,18 @@ const SwapCard = (props: any) => {
     const newValue = isNaN(parsedValue) ? '0' : parsedValue.toString()
     setAmount(newValue)
   }
+
+  const valueUSD = useMemo(() => priceUSD * amount, [priceUSD, amount])
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const price = await getCoinPrice(token)
+
+      if (price) setPriceUSD(price?.usd)
+    }
+
+    fetchPrice()
+  }, [token])
 
   useEffect(() => {
     setToken(myToken ? getNativeToken(tokensList)[0] : getStableCoins(tokensList)[0])
@@ -52,7 +67,7 @@ const SwapCard = (props: any) => {
             ''
           )}
         </Group>
-        {isConnected ? <Text size="xs">Balance: {balance}</Text> : ''}
+        {isConnected ? <Text size="xs">Balance: {formatNumber(balance.toString(), 5)}</Text> : ''}
       </Group>
       <Group position="apart">
         <TextInput
@@ -65,13 +80,14 @@ const SwapCard = (props: any) => {
           variant="unstyled"
           value={amount}
           readOnly={!myToken}
+          style={{ maxWidth: 180 }}
         />
         <TokenButton token={token} myToken={myToken} openModal={openModal} />
       </Group>
       <Group position="apart">
         <Group position="left">
           <Text size="xs" color="dimmed">
-            {token?.name}
+            ~ $ {formatNumber(valueUSD.toString(), 2)}
           </Text>
         </Group>
         <Group position="right">

@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { API_ENDPOINT } from './Endpoints'
+import { API_ENDPOINT_1INCH } from './Endpoints'
 import { Chain, Address, erc20ABI } from 'wagmi'
 import { getContract, getProvider } from '@wagmi/core'
-import { fee } from '@/utils/AppConfig'
 
 const POPULAR_COINS = [
   'ETH',
@@ -16,12 +15,8 @@ const POPULAR_COINS = [
   'DAI',
   'DOT',
   'LTC',
-  'SOL',
   'SHIB',
   'LINK',
-  'UNI',
-  'FIL',
-  'NEAR',
 ]
 const STABLE_COINS = ['USDT', 'USDC']
 
@@ -40,8 +35,12 @@ export interface DEXQuote {
   fee: number
 }
 
+export interface CoinPrice {
+  usd: number
+}
+
 const getTokensList = async (chain: Chain): Promise<ERC20Token[]> => {
-  const GET_TOKEN_LIST_ENDPOINT = `${API_ENDPOINT}/${chain.id}/tokens`
+  const GET_TOKEN_LIST_ENDPOINT = `${API_ENDPOINT_1INCH}/${chain.id}/tokens`
   try {
     const response = await axios.get(GET_TOKEN_LIST_ENDPOINT)
     const { tokens } = response.data
@@ -68,7 +67,7 @@ const getTokenRate = async (
   chain: Chain,
   xfee: number = 0
 ): Promise<DEXQuote> => {
-  const GET_QUOTE_ENDPOINT = `${API_ENDPOINT}/${chain.id}/quote`
+  const GET_QUOTE_ENDPOINT = `${API_ENDPOINT_1INCH}/${chain.id}/quote`
   const params = {
     fee: xfee,
     fromTokenAddress: fromToken?.address,
@@ -110,4 +109,17 @@ const getTokenFromContract = async (contractAddress: Address, chain: Chain): Pro
   return null
 }
 
-export { getStableCoins, getPopularTokens, getTokensList, getNativeToken, getTokenRate, getTokenFromContract }
+const getCoinPrice = async (token: ERC20Token): Promise<CoinPrice | null> => {
+  const response = await axios.get(`/api/v1.0/price`, { params: { symbol: token?.symbol } })
+  return response.data ?? null
+}
+
+export {
+  getStableCoins,
+  getPopularTokens,
+  getTokensList,
+  getNativeToken,
+  getTokenRate,
+  getTokenFromContract,
+  getCoinPrice,
+}

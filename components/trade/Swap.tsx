@@ -69,7 +69,7 @@ const Component = () => {
         modalHandler={modalHandler}
       />
       <Group position="center" p="xl">
-        <Paper shadow="md" radius="md" p="md" withBorder style={{ minWidth: 400 }}>
+        <Paper shadow="md" radius="md" p="md" withBorder style={{ minWidth: 390 }}>
           <Stack>
             <Group position="apart">
               <Text>Swap</Text>

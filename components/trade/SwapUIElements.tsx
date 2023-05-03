@@ -12,6 +12,7 @@ const TokenButton = (props: any) => {
       color="gray"
       radius="xl"
       variant="subtle"
+      compact
     >
       {token?.symbol}
       <ChevronDown size={18} />

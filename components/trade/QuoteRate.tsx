@@ -3,6 +3,7 @@ import { Paper, Group, Text } from '@mantine/core'
 import { GasStation } from 'tabler-icons-react'
 import { useBlockchain } from '@/contexts/BlockchainContext'
 import { type DEXQuote, getTokenRate } from '@/utils/Tokens'
+import { formatNumber } from '@/utils/Formatter'
 
 const QuoteRate = (props: any) => {
   const { payToken, payAmount, getToken, setGetAmount } = props
@@ -36,9 +37,9 @@ const QuoteRate = (props: any) => {
     <Paper radius="md" p="md" withBorder>
       <Group position="apart">
         <Group position="left">
-          <Text size="xs">{`1 ${payToken?.symbol} = ${quote?.rate / 10 ** getToken?.decimals} ${
-            getToken?.symbol
-          }`}</Text>
+          <Text size="xs">{`1 ${payToken?.symbol} = ${formatNumber(
+            (quote?.rate / 10 ** getToken?.decimals).toString()
+          )} ${getToken?.symbol}`}</Text>
         </Group>
         <Group position="right">
           <GasStation size={14} />
