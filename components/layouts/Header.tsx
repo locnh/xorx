@@ -1,9 +1,7 @@
 import React from 'react'
-import Link from 'next/link'
 import Logo from '../common/Logo'
 import ProfileMenu from 'components/common/ProfileMenu'
 import NetworkMenu from 'components/common/NetworkMenu'
-import BridgeMenu from 'components/common/BridgeMenu'
 import TradeMenu from 'components/common/TradeMenu'
 import DAOMenu from 'components/common/DAOMenu'
 import BurgerMenu from 'components/common/BurgerMenu'
@@ -16,9 +14,7 @@ const Component = () => {
       <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
         <Group position="apart">
           <Group position="left">
-            <Link href="/">
-              <Logo />
-            </Link>
+            <Logo />
             <TradeMenu />
             <DAOMenu />
           </Group>
@@ -31,9 +27,7 @@ const Component = () => {
       <MediaQuery largerThan="md" styles={{ display: 'none' }}>
         <Group position="apart">
           <Group position="left" spacing="xs">
-            <Link href="/">
-              <Logo />
-            </Link>
+            <Logo />
             <BurgerMenu />
           </Group>
           <Group position="right" spacing="xs">

@@ -1,7 +1,9 @@
 import { fetchBalance } from '@wagmi/core'
 import { Address } from 'wagmi'
-import { ERC20Token } from './Tokens'
+import { type ERC20Token } from './Tokens'
+import { type Chain } from './Chains'
 import { BigNumber } from 'ethers'
+
 interface Balance {
   decimals: number | null
   formatted: string | null
@@ -9,12 +11,12 @@ interface Balance {
   value: BigNumber | null
 }
 
-const getBalance = async (address: Address, token: ERC20Token) => {
-  let params = token?.tags.includes('native') ? { address: address } : { address: address, token: token?.address }
+const getBalance = async (address: Address, token: ERC20Token, chain: Chain) => {
+  const params = token?.tags.includes('native') ? { address: address } : { address: address, token: token?.address }
   try {
-    return (await fetchBalance(params)) as Balance
+    return (await fetchBalance({ ...params, chainId: chain.id })) as Balance
   } catch (err) {
-    console.log(err)
+    console.log()
   }
 
   return {

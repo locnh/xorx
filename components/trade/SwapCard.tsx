@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Paper, Group, Text, Button, TextInput } from '@mantine/core'
 import { TokenButton } from './SwapUIElements'
 import { getBalance, type Balance } from '@/utils/Accounts'
+import { useBlockchain } from '@/contexts/BlockchainContext'
+import { getNativeToken, getStableCoins } from '@/utils/Tokens'
 import { useAccount } from 'wagmi'
 
 const SwapCard = (props: any) => {
-  const { token, myToken, amount, setAmount, openModal } = props
+  const { tokensList, token, setToken, myToken, amount, setAmount, openModal } = props
   const { address, isConnected } = useAccount()
+  const { blockchain } = useBlockchain()
 
   const [balance, setBalance] = useState<number>(0)
 
@@ -17,15 +20,20 @@ const SwapCard = (props: any) => {
   }
 
   useEffect(() => {
+    setToken(myToken ? getNativeToken(tokensList)[0] : getStableCoins(tokensList)[0])
+    setAmount('')
+  }, [tokensList, myToken, setAmount, setToken])
+
+  useEffect(() => {
     const fetchBalance = async () => {
-      if (address && isConnected) {
-        const data: Balance = await getBalance(address, token)
+      if (address) {
+        const data: Balance = await getBalance(address, token, blockchain)
         if (data.formatted) setBalance(Number(data.formatted))
       }
     }
 
     fetchBalance()
-  }, [address, isConnected, token])
+  }, [token, address, blockchain])
 
   return (
     <Paper radius="md" p="md" withBorder>
@@ -49,6 +57,7 @@ const SwapCard = (props: any) => {
       <Group position="apart">
         <TextInput
           type="number"
+          step="any"
           inputMode="decimal"
           onChange={handleValueChange}
           placeholder="0"

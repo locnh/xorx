@@ -6,14 +6,14 @@ import { Address, useAccount } from 'wagmi'
 import { getTokensList, type ERC20Token, getPopularTokens, getStableCoins, getNativeToken } from '@/utils/Tokens'
 import { useBlockchain } from '@/contexts/BlockchainContext'
 import ConnectButton from '@/components/common/ConnectButton'
-import { SwapSettings, EstimatedRateGas, SearchTokens, SwapDexButton } from './SwapUIElements'
+import { SwapSettings, SwapDexButton } from './SwapUIElements'
+import { SearchTokens } from './SearchTokens'
+import { QuoteRate } from './QuoteRate'
 import { SwapCard } from './SwapCard'
 
 const Component = () => {
   const { blockchain } = useBlockchain()
   const { isConnected } = useAccount()
-
-  //console.log(blockchain)
 
   const [tokensList, setTokensList] = useState<ERC20Token[]>([])
 
@@ -24,7 +24,6 @@ const Component = () => {
   const [getAmount, setGetAmount] = useState<number | ''>('')
 
   const [slippage, setSlippage] = useState<number>(0.1)
-  const [estimatedGas, setEstimatedGas] = useState<number>(0)
 
   // True is changing payToken, False is changing getToken
   const [changeMyToken, setChangeMyToken] = useState<boolean>(false)
@@ -57,8 +56,6 @@ const Component = () => {
     const fetchTokens = async () => {
       const _tokensList = await getTokensList(blockchain)
       setTokensList(_tokensList)
-      setPayToken(getNativeToken(_tokensList)[0])
-      setGetToken(getStableCoins(_tokensList)[0])
     }
     fetchTokens()
   }, [blockchain])
@@ -80,7 +77,9 @@ const Component = () => {
             </Group>
             <Stack>
               <SwapCard
+                tokensList={tokensList}
                 token={payToken}
+                setToken={setPayToken}
                 myToken={true}
                 amount={payAmount}
                 setAmount={setPayAmount}
@@ -92,20 +91,25 @@ const Component = () => {
                 </ActionIcon>
               </Group>
               <SwapCard
+                tokensList={tokensList}
                 token={getToken}
+                setToken={setGetToken}
                 myToken={false}
                 amount={getAmount}
                 setAmount={setGetAmount}
                 openModal={openModal}
               />
-              <EstimatedRateGas
-                payToken={payToken}
-                payAmount={payAmount}
-                setPayAmount={setPayAmount}
-                getToken={getToken}
-                getAmount={getAmount}
-                setGetAmount={setGetAmount}
-              />
+              {payAmount ? (
+                <QuoteRate
+                  payToken={payToken}
+                  payAmount={payAmount}
+                  setPayAmount={setPayAmount}
+                  getToken={getToken}
+                  setGetAmount={setGetAmount}
+                />
+              ) : (
+                <></>
+              )}
               <Stack>{isConnected ? <SwapDexButton /> : <ConnectButton />}</Stack>
             </Stack>
           </Stack>
