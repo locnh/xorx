@@ -11,7 +11,7 @@ import { SwapCard } from './SwapCard'
 
 const Component = () => {
   const { blockchain } = useBlockchain()
-  const { address, isConnected } = useAccount()
+  const { isConnected } = useAccount()
 
   //console.log(blockchain)
 
@@ -23,9 +23,6 @@ const Component = () => {
   const [payAmount, setPayAmount] = useState<number | ''>('')
   const [getAmount, setGetAmount] = useState<number | ''>('')
 
-  const [payTokenBalance, setPayTokenBalance] = useState<number>(0)
-  const [getTokenBalance, setGetTokenBalance] = useState<number>(0)
-
   const [slippage, setSlippage] = useState<number>(0.1)
   const [estimatedGas, setEstimatedGas] = useState<number>(0)
 
@@ -33,9 +30,6 @@ const Component = () => {
   const [changeMyToken, setChangeMyToken] = useState<boolean>(false)
 
   const [isModalOpened, modalHandler] = useDisclosure(false)
-
-  console.log('yyyy', payAmount)
-  console.log('zzzz', getAmount)
 
   const openModal = (bool: boolean) => {
     setChangeMyToken(bool)
@@ -86,11 +80,8 @@ const Component = () => {
             </Group>
             <Stack>
               <SwapCard
-                isConnected={isConnected}
                 token={payToken}
                 myToken={true}
-                balance={payTokenBalance}
-                setBalance={setPayTokenBalance}
                 amount={payAmount}
                 setAmount={setPayAmount}
                 openModal={openModal}
@@ -101,16 +92,20 @@ const Component = () => {
                 </ActionIcon>
               </Group>
               <SwapCard
-                isConnected={isConnected}
                 token={getToken}
                 myToken={false}
-                balance={getTokenBalance}
-                setBalance={setGetTokenBalance}
                 amount={getAmount}
                 setAmount={setGetAmount}
                 openModal={openModal}
               />
-              <EstimatedRateGas />
+              <EstimatedRateGas
+                payToken={payToken}
+                payAmount={payAmount}
+                setPayAmount={setPayAmount}
+                getToken={getToken}
+                getAmount={getAmount}
+                setGetAmount={setGetAmount}
+              />
               <Stack>{isConnected ? <SwapDexButton /> : <ConnectButton />}</Stack>
             </Stack>
           </Stack>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Popover, ActionIcon, Text, TextInput, Paper, Group, Button, Modal, Stack, Image, Space } from '@mantine/core'
 import { AdjustmentsHorizontal, Percentage, GasStation, ChevronDown, Search } from 'tabler-icons-react'
-import { ERC20Token } from '@/utils/Tokens'
+import { ERC20Token, DEXQuote, getTokenRate } from '@/utils/Tokens'
+import { useBlockchain } from '@/contexts/BlockchainContext'
 
 const TokenButton = (props: any) => {
   const { token, myToken, openModal } = props
@@ -33,17 +34,39 @@ const SwapDexButton = () => (
 )
 
 const EstimatedRateGas = (props: any) => {
-  const { estimatedGas } = props
+  const { payToken, payAmount, setPayAmount, getToken, getAmount, setGetAmount } = props
+
+  const { blockchain } = useBlockchain()
+  const [quote, setQuote] = useState<DEXQuote>({
+    rate: 0,
+    estimatedGas: 0,
+    fee: 0,
+  })
+
+  useEffect(() => {
+    const fetchRate = async () => {
+      const data: DEXQuote = await getTokenRate(payToken, getToken, blockchain)
+      if (data.rate) setQuote(data)
+    }
+    fetchRate()
+  }, [payToken, getToken, blockchain])
+
+  useEffect(() => {
+    const _amount = (payAmount * quote.rate) / 10 ** getToken.decimals
+    setGetAmount(_amount)
+  }, [payAmount, getToken, quote, setGetAmount])
 
   return (
     <Paper radius="md" p="md" withBorder>
       <Group position="apart">
         <Group position="left">
-          <Text size="xs">rate</Text>
+          <Text size="xs">{`1 ${payToken?.symbol} = ${quote?.rate / 10 ** getToken?.decimals} ${
+            getToken?.symbol
+          }`}</Text>
         </Group>
         <Group position="right">
           <GasStation size={14} />
-          <Text size="xs">{estimatedGas}</Text>
+          <Text size="xs">{quote?.estimatedGas}</Text>
         </Group>
       </Group>
     </Paper>
@@ -92,7 +115,7 @@ const SearchTokens = (props: any) => {
         />
         <Group>
           {tokensList.map((token: ERC20Token, i: any) =>
-            searchTerm.length > 2 &&
+            searchTerm.length > 1 &&
             (token.symbol.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
               token.address.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) ? (
               <Button

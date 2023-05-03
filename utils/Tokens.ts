@@ -48,14 +48,14 @@ const getTokenRate = async (
   fromToken: ERC20Token,
   toToken: ERC20Token,
   chain: Chain,
-  xfee: number = fee
+  xfee: number = 0
 ): Promise<DEXQuote> => {
   const GET_QUOTE_ENDPOINT = `${API_ENDPOINT}/${chain.id}/quote`
   const params = {
     fee: xfee,
-    fromTokenAddress: fromToken.address,
-    toTokenAddress: toToken.address,
-    amount: 10 ** fromToken.decimals,
+    fromTokenAddress: fromToken?.address,
+    toTokenAddress: toToken?.address,
+    amount: 10 ** fromToken?.decimals,
   }
   try {
     const response = await axios.get(GET_QUOTE_ENDPOINT, { params: params })
