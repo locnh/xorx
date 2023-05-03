@@ -7,6 +7,7 @@ const POPULAR_COINS = [
   'ETH',
   'WETH',
   'WBTC',
+  'BBTC',
   'BNB',
   'WBNB',
   'USDT',
@@ -110,8 +111,11 @@ const getTokenFromContract = async (contractAddress: Address, chain: Chain): Pro
 }
 
 const getCoinPrice = async (token: ERC20Token): Promise<CoinPrice | null> => {
-  const response = await axios.get(`/api/v1.0/price`, { params: { symbol: token?.symbol } })
-  return response.data ?? null
+  if (token && token.symbol) {
+    const response = await axios.get(`/api/v1.0/price`, { params: { symbol: token?.symbol } })
+    if (response.status === 200) return response.data
+  }
+  return null
 }
 
 export {

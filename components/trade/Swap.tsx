@@ -13,7 +13,7 @@ import { SwapCard } from './SwapCard'
 
 const Component = () => {
   const { blockchain } = useBlockchain()
-  const { isConnected } = useAccount()
+  const { address, isConnected } = useAccount()
 
   const [tokensList, setTokensList] = useState<ERC20Token[]>([])
 
@@ -58,7 +58,7 @@ const Component = () => {
       setTokensList(_tokensList)
     }
     fetchTokens()
-  }, [blockchain])
+  }, [blockchain, address])
 
   return (
     <>
