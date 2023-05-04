@@ -54,7 +54,7 @@ const SwapCard = (props: any) => {
     <Paper radius="md" p="md" withBorder>
       <Group position="apart">
         <Group position="left">
-          <Text size="xs">You pay</Text>
+          <Text size="xs">You {myToken ? 'pay' : 'get'}</Text>
           {balance ? (
             myToken ? (
               <Button onClick={() => setAmount(balance)} size="xs" variant="subtle" radius="xl" compact>

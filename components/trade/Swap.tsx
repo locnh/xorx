@@ -41,8 +41,6 @@ const Component = () => {
     } else {
       payToken == token ? swapPayGetTokens() : setGetToken(token)
     }
-    setPayAmount(0)
-    setGetAmount(0)
     modalHandler.close()
   }
 
@@ -50,6 +48,10 @@ const Component = () => {
     const token = payToken
     setPayToken(getToken)
     setGetToken(token)
+
+    const amount = payAmount
+    setPayAmount(getAmount)
+    setGetAmount(amount)
   }
 
   useEffect(() => {

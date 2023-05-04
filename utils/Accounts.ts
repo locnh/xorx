@@ -1,7 +1,6 @@
 import { fetchBalance } from '@wagmi/core'
 import { Address } from 'wagmi'
 import { type ERC20Token } from './Tokens'
-import { type Chain } from './Chains'
 import { BigNumber } from 'ethers'
 
 interface Balance {
