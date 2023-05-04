@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Paper, Group, Text, Button, TextInput } from '@mantine/core'
+import { Paper, Group, Text, Button, TextInput, Loader } from '@mantine/core'
 import { TokenButton } from './SwapUIElements'
 import { getBalance, type Balance } from '@/utils/Accounts'
 import { useBlockchain } from '@/contexts/BlockchainContext'
@@ -13,6 +13,7 @@ const SwapCard = (props: any) => {
   const { blockchain } = useBlockchain()
 
   const [priceUSD, setPriceUSD] = useState<number>(0)
+  const [priceLoading, setPriceLoading] = useState<boolean>(false)
 
   const [balance, setBalance] = useState<number>(0)
 
@@ -28,10 +29,13 @@ const SwapCard = (props: any) => {
     const fetchPrice = async () => {
       const price = await getCoinPrice(token)
 
-      if (price) setPriceUSD(price.rate)
+      if (price) {
+        setPriceUSD(price.rate)
+        setPriceLoading(false)
+      }
     }
-
-    fetchPrice()
+    setPriceLoading(true)
+    setTimeout(fetchPrice, 1000)
   }, [token])
 
   useEffect(() => {
@@ -72,7 +76,6 @@ const SwapCard = (props: any) => {
       <Group position="apart">
         <TextInput
           type="number"
-          step="any"
           inputMode="decimal"
           onChange={handleValueChange}
           placeholder="0"
@@ -86,9 +89,13 @@ const SwapCard = (props: any) => {
       </Group>
       <Group position="apart">
         <Group position="left">
-          <Text size="xs" color="dimmed">
-            ~ $ {formatNumber(valueUSD, 2)}
-          </Text>
+          {priceLoading ? (
+            <Loader variant="dots" size="xs" />
+          ) : (
+            <Text size="xs" color="dimmed">
+              ~ $ {formatNumber(valueUSD, 2)}
+            </Text>
+          )}
         </Group>
         <Group position="right">
           <Text size="xs" color="dimmed">

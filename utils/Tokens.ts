@@ -48,16 +48,23 @@ export interface CoinPrice {
 }
 
 const getTokensList = async (chain: Chain): Promise<ERC20Token[]> => {
+  const localData = localStorage.getItem(`tokensList_${chain.id}`)
+  if (localData) return JSON.parse(localData)
+
   const GET_TOKEN_LIST_ENDPOINT = `${API_ENDPOINT_1INCH}/${chain.id}/tokens`
   try {
     const response = await axios.get(GET_TOKEN_LIST_ENDPOINT)
     const { tokens } = response.data
-
-    return Object.values(tokens).map((token) => token as ERC20Token)
+    if (tokens) {
+      const _tokens = Object.values(tokens).map((token) => token as ERC20Token)
+      localStorage.setItem(`tokensList_${chain.id}`, JSON.stringify(_tokens))
+      return _tokens
+    }
   } catch (error: any) {
     console.log(error)
-    return []
   }
+
+  return []
 }
 
 const getNativeToken = (TokensList: ERC20Token[]): ERC20Token[] =>
@@ -117,11 +124,16 @@ const getTokenFromContract = async (contractAddress: Address, chain: Chain): Pro
   return null
 }
 
-const getCoinsList = async (): Promise<CoinGecko[] | undefined> => {
-  const params = { include_platform: false }
+const getCoinsList = async (include_platform: boolean = false): Promise<CoinGecko[] | undefined> => {
+  const localData = localStorage.getItem('coinsList')
+
+  if (localData) return JSON.parse(localData)
+
+  const params = { include_platform: include_platform }
   const response = await axios.get(`${API_ENDPOINT_COINGECKO}/coins/list`, { params: params })
 
   if (response.status === 200) {
+    localStorage.setItem('coinsList', JSON.stringify(response.data))
     return response.data
   }
 
