@@ -5,6 +5,7 @@ import { getBalance, type Balance } from '@/utils/Accounts'
 import { useBlockchain } from '@/contexts/BlockchainContext'
 import { getNativeToken, getStableCoins, getCoinPrice } from '@/utils/Tokens'
 import { formatNumber } from '@/utils/Formatter'
+import { refreshPriceInterval } from '@/utils/AppConfig'
 import { useAccount } from 'wagmi'
 
 const SwapCard = (props: any) => {
@@ -35,7 +36,14 @@ const SwapCard = (props: any) => {
       }
     }
     setPriceLoading(true)
-    setTimeout(fetchPrice, 1000)
+    setTimeout(fetchPrice, 600)
+
+    const interval = setInterval(() => {
+      setPriceLoading(true)
+      setTimeout(fetchPrice, 600)
+    }, refreshPriceInterval)
+
+    return () => clearInterval(interval)
   }, [token])
 
   useEffect(() => {
