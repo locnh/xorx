@@ -129,7 +129,7 @@ const getCoinsList = async (): Promise<CoinGecko[] | undefined> => {
 }
 
 const getCoinId = async (token: ERC20Token): Promise<string | undefined> => {
-  if (token.symbol) {
+  if (token?.symbol) {
     const coinsList = await getCoinsList()
 
     if (coinsList) {

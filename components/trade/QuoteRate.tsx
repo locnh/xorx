@@ -37,9 +37,9 @@ const QuoteRate = (props: any) => {
     <Paper radius="md" p="md" withBorder>
       <Group position="apart">
         <Group position="left">
-          <Text size="xs">{`1 ${payToken?.symbol} = ${formatNumber(
-            (quote?.rate / 10 ** getToken?.decimals).toString()
-          )} ${getToken?.symbol}`}</Text>
+          <Text size="xs">{`1 ${payToken?.symbol} = ${formatNumber(quote?.rate / 10 ** getToken?.decimals)} ${
+            getToken?.symbol
+          }`}</Text>
         </Group>
         <Group position="right">
           <GasStation size={14} />

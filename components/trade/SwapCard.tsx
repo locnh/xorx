@@ -67,7 +67,7 @@ const SwapCard = (props: any) => {
             ''
           )}
         </Group>
-        {isConnected ? <Text size="xs">Balance: {formatNumber(balance.toString(), 5)}</Text> : ''}
+        {isConnected ? <Text size="xs">Balance: {formatNumber(balance, 5)}</Text> : ''}
       </Group>
       <Group position="apart">
         <TextInput
@@ -87,7 +87,7 @@ const SwapCard = (props: any) => {
       <Group position="apart">
         <Group position="left">
           <Text size="xs" color="dimmed">
-            ~ $ {formatNumber(valueUSD.toString(), 2)}
+            ~ $ {formatNumber(valueUSD, 2)}
           </Text>
         </Group>
         <Group position="right">
