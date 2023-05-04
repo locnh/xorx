@@ -21,8 +21,8 @@ const QuoteRate = (props: any) => {
   useEffect(() => {
     const fetchRate = async () => {
       if (payToken && getToken) {
-        const data: DEXQuote = await getTokenRate(payToken, getToken, blockchain, fee)
-        if (data.rate) setQuote(data)
+        const data = await getTokenRate(payToken, getToken, blockchain, fee)
+        if (data) setQuote(data)
       }
     }
     fetchRate()

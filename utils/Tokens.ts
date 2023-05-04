@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_ENDPOINT_1INCH } from './Endpoints'
+import { API_ENDPOINT_1INCH, API_ENDPOINT_COINGECKO } from './Endpoints'
 import { Chain, Address, erc20ABI } from 'wagmi'
 import { getContract, getProvider } from '@wagmi/core'
 
@@ -21,6 +21,12 @@ const POPULAR_COINS = [
 ]
 const STABLE_COINS = ['USDT', 'USDC']
 
+export interface CoinGecko {
+  id: string
+  symbol: string
+  name: string
+}
+
 export interface ERC20Token {
   symbol: string
   name: string
@@ -37,7 +43,8 @@ export interface DEXQuote {
 }
 
 export interface CoinPrice {
-  usd: number
+  currency: string
+  rate: number
 }
 
 const getTokensList = async (chain: Chain): Promise<ERC20Token[]> => {
@@ -67,7 +74,7 @@ const getTokenRate = async (
   toToken: ERC20Token,
   chain: Chain,
   xfee: number = 0
-): Promise<DEXQuote> => {
+): Promise<DEXQuote | undefined> => {
   const GET_QUOTE_ENDPOINT = `${API_ENDPOINT_1INCH}/${chain.id}/quote`
   const params = {
     fee: xfee,
@@ -82,7 +89,7 @@ const getTokenRate = async (
     return { rate: toTokenAmount, estimatedGas: estimatedGas, fee: xfee } as DEXQuote
   } catch (error: any) {
     console.log(error)
-    return { rate: 0, estimatedGas: 0, fee: xfee } as DEXQuote
+    return
   }
 }
 
@@ -110,12 +117,44 @@ const getTokenFromContract = async (contractAddress: Address, chain: Chain): Pro
   return null
 }
 
-const getCoinPrice = async (token: ERC20Token): Promise<CoinPrice | null> => {
-  if (token && token.symbol) {
-    const response = await axios.get(`/api/v1.0/price`, { params: { symbol: token?.symbol } })
-    if (response.status === 200) return response.data
+const getCoinsList = async (): Promise<CoinGecko[] | undefined> => {
+  const params = { include_platform: false }
+  const response = await axios.get(`${API_ENDPOINT_COINGECKO}/coins/list`, { params: params })
+
+  if (response.status === 200) {
+    return response.data
   }
-  return null
+
+  return
+}
+
+const getCoinId = async (token: ERC20Token): Promise<string | undefined> => {
+  if (token.symbol) {
+    const coinsList = await getCoinsList()
+
+    if (coinsList) {
+      const coin = coinsList.find((coin) => coin.symbol.toLowerCase() === token.symbol.toLowerCase())
+      return coin ? coin.id : undefined
+    }
+  }
+
+  return
+}
+
+const getCoinPrice = async (token: ERC20Token, currency: string = 'usd'): Promise<CoinPrice | undefined> => {
+  const coinId = await getCoinId(token)
+
+  if (coinId) {
+    const params = { ids: coinId, vs_currencies: currency }
+    const response = await axios.get(`${API_ENDPOINT_COINGECKO}/simple/price`, { params: params })
+
+    if (response.status === 200) {
+      const price: CoinPrice = { currency: currency, rate: response.data[coinId][currency] }
+      return price
+    }
+  }
+
+  return
 }
 
 export {
@@ -126,4 +165,6 @@ export {
   getTokenRate,
   getTokenFromContract,
   getCoinPrice,
+  getCoinsList,
+  getCoinId,
 }

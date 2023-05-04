@@ -28,7 +28,7 @@ const SwapCard = (props: any) => {
     const fetchPrice = async () => {
       const price = await getCoinPrice(token)
 
-      if (price) setPriceUSD(price?.usd)
+      if (price) setPriceUSD(price.rate)
     }
 
     fetchPrice()
