@@ -7,7 +7,6 @@ const POPULAR_COINS = [
   'ETH',
   'WETH',
   'WBTC',
-  'BBTC',
   'BNB',
   'WBNB',
   'USDT',
