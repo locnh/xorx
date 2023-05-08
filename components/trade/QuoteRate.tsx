@@ -48,7 +48,6 @@ const QuoteRate = (props: any) => {
     setGetAmount(_amount.toString())
   }, [payAmount, getToken, quote, setGetAmount])
 
-  console.log(quote)
   return (
     <Paper radius="md" p="md" withBorder>
       <Group position="apart">

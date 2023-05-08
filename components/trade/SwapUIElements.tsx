@@ -1,6 +1,8 @@
 import React from 'react'
-import { Popover, ActionIcon, Text, TextInput, Group, Button, Image } from '@mantine/core'
+import { Popover, ActionIcon, Text, TextInput, Group, Button, Image, Avatar } from '@mantine/core'
 import { AdjustmentsHorizontal, Percentage, ChevronDown } from 'tabler-icons-react'
+import { ERC20Token } from '@/utils/Tokens'
+import { ASSETS_CDN } from '@/utils/AppConfig'
 
 const TokenButton = (props: any) => {
   const { token, myToken, openModal } = props
@@ -8,13 +10,15 @@ const TokenButton = (props: any) => {
   return (
     <Button
       onClick={() => openModal(myToken)}
-      leftIcon={<Image src={token?.logoURI} height={24} width={24} alt="" />}
-      color="gray"
-      radius="xl"
-      variant="subtle"
-      compact
+      leftIcon={
+        <Avatar src={`${ASSETS_CDN}/${(token as ERC20Token)?.symbol.toLowerCase()}.webp`} size={24}>
+          {token?.symbol}
+        </Avatar>
+      }
+      variant=""
+      pr={0}
     >
-      {token?.symbol}
+      <Text pr={6}>{token?.symbol}</Text>
       <ChevronDown size={18} />
     </Button>
   )

@@ -4,13 +4,13 @@ import { type ERC20Token } from './Tokens'
 import { BigNumber } from 'ethers'
 
 interface Balance {
-  decimals: number | null
-  formatted: string | null
-  symbol: string | null
-  value: BigNumber | null
+  decimals: number
+  formatted: string
+  symbol: string
+  value: BigNumber
 }
 
-const getBalance = async (address: Address, token: ERC20Token) => {
+const getBalance = async (address: Address, token: ERC20Token): Promise<Balance | undefined> => {
   const params = token?.tags.includes('native') ? { address: address } : { address: address, token: token?.address }
   try {
     return (await fetchBalance(params)) as Balance
@@ -18,12 +18,7 @@ const getBalance = async (address: Address, token: ERC20Token) => {
     console.log()
   }
 
-  return {
-    decimals: null,
-    formatted: null,
-    symbol: null,
-    value: null,
-  }
+  return
 }
 
 export { getBalance, type Balance }

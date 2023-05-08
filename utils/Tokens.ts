@@ -141,13 +141,13 @@ const getCoinsList = async (include_platform: boolean = false): Promise<CoinGeck
 }
 
 const getCoinId = async (token: ERC20Token): Promise<string | undefined> => {
-  if (token?.symbol) {
-    const coinsList = await getCoinsList()
+  if (!token?.symbol) return
 
-    if (coinsList) {
-      const coin = coinsList.find((coin) => coin.symbol.toLowerCase() === token.symbol.toLowerCase())
-      return coin ? coin.id : undefined
-    }
+  const coinsList = await getCoinsList()
+
+  if (coinsList) {
+    const coin = coinsList.find((coin) => coin.symbol.toLowerCase() === token.symbol.toLowerCase())
+    return coin ? coin.id : undefined
   }
 
   return
@@ -156,14 +156,14 @@ const getCoinId = async (token: ERC20Token): Promise<string | undefined> => {
 const getCoinPrice = async (token: ERC20Token, currency: string = 'usd'): Promise<CoinPrice | undefined> => {
   const coinId = await getCoinId(token)
 
-  if (coinId) {
-    const params = { ids: coinId, vs_currencies: currency }
-    const response = await axios.get(`${API_ENDPOINT_COINGECKO}/simple/price`, { params: params })
+  if (!coinId) return
 
-    if (response.status === 200) {
-      const price: CoinPrice = { currency: currency, rate: response.data[coinId][currency] }
-      return price
-    }
+  const params = { ids: coinId, vs_currencies: currency }
+  const response = await axios.get(`${API_ENDPOINT_COINGECKO}/simple/price`, { params: params })
+
+  if (response.status === 200) {
+    const price: CoinPrice = { currency: currency, rate: response.data[coinId][currency] }
+    return price
   }
 
   return

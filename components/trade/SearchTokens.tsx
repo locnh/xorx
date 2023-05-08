@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Modal, Stack, TextInput, Group, Button, Image, Divider } from '@mantine/core'
+import { Modal, Stack, TextInput, Group, Button, Image, Divider, Avatar } from '@mantine/core'
 import { Search } from 'tabler-icons-react'
 import { type ERC20Token, getPopularTokens } from '@/utils/Tokens'
+import { ASSETS_CDN } from '@/utils/AppConfig'
 
 const SearchTokens = (props: any) => {
   const { tokensList, isModalOpened, modalHandler, changeToken } = props
@@ -24,7 +25,11 @@ const SearchTokens = (props: any) => {
             <Button
               onClick={() => changeToken(token)}
               key={token.address}
-              leftIcon={<Image src={token.logoURI} height={24} width={24} alt="" />}
+              leftIcon={
+                <Avatar src={`${ASSETS_CDN}/${(token as ERC20Token)?.symbol.toLowerCase()}.webp`} size={24}>
+                  {(token as ERC20Token).symbol}
+                </Avatar>
+              }
               color="gray"
               radius="xl"
               uppercase
@@ -42,7 +47,11 @@ const SearchTokens = (props: any) => {
               <Button
                 onClick={() => changeToken(token)}
                 key={token.address}
-                leftIcon={<Image src={token.logoURI} height={24} width={24} alt="" />}
+                leftIcon={
+                  <Avatar src={`${ASSETS_CDN}/${(token as ERC20Token)?.symbol.toLowerCase()}.webp`} size={24}>
+                    {token?.symbol}
+                  </Avatar>
+                }
                 color="gray"
                 radius="xl"
                 uppercase

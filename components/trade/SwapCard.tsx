@@ -54,8 +54,8 @@ const SwapCard = (props: any) => {
   useEffect(() => {
     const fetchBalance = async () => {
       if (address) {
-        const data: Balance = await getBalance(address, token)
-        if (data.formatted) setBalance(Number(data.formatted))
+        const data = await getBalance(address, token)
+        if (data) setBalance(Number(data.formatted))
       }
     }
 
