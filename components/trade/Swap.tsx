@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useDisclosure } from '@mantine/hooks'
 import { Group, Paper, ActionIcon, Text, Stack } from '@mantine/core'
 import { ArrowsUpDown } from 'tabler-icons-react'
-import { Address, useAccount } from 'wagmi'
-import { getTokensList, type ERC20Token, getPopularTokens, getStableCoins, getNativeToken } from '@/utils/Tokens'
+import { useAccount } from 'wagmi'
+import { getTokensList, type ERC20Token, getNativeToken } from '@/utils/Tokens'
 import { useBlockchain } from '@/contexts/BlockchainContext'
 import ConnectButton from '@/components/common/ConnectButton'
 import { SwapSettings, SwapDexButton } from './SwapUIElements'
 import { SearchTokens } from './SearchTokens'
-import { QuoteRate } from './QuoteRate'
+import { DexQuote } from './DexQuote'
 import { SwapCard } from './SwapCard'
 
 const Component = () => {
@@ -102,12 +102,13 @@ const Component = () => {
                 openModal={openModal}
               />
               {payAmount ? (
-                <QuoteRate
+                <DexQuote
                   payToken={payToken}
                   payAmount={payAmount}
                   setPayAmount={setPayAmount}
                   getToken={getToken}
                   setGetAmount={setGetAmount}
+                  nativeToken={getNativeToken(tokensList)[0]}
                 />
               ) : (
                 <></>

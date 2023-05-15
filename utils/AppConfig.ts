@@ -1,4 +1,7 @@
-export const refreshRateInterval: number = 6000 // 5 seconds
-export const refreshPriceInterval: number = 60000 // 60 seconds
+const SECOND = 1000 // milliseconds
+
+export const refreshRateInterval = 6 * SECOND
+export const refreshPriceInterval = 60 * SECOND
+export const refreshFeeDataInterval = 10 * SECOND
 
 export const ASSETS_CDN = 'https://assets.xorx.cc/tokens/sm'

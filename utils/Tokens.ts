@@ -7,6 +7,7 @@ const POPULAR_COINS = [
   'ETH',
   'WETH',
   'WBTC',
+  'BTCB',
   'BNB',
   'WBNB',
   'USDT',
@@ -35,7 +36,7 @@ export interface ERC20Token {
   tags: string[]
 }
 
-export interface DEXQuote {
+export interface DEXRate {
   rate: number
   estimatedGas: number
   fee: number
@@ -46,7 +47,7 @@ export interface CoinPrice {
   rate: number
 }
 
-const getTokensList = async (chain: Chain): Promise<ERC20Token[]> => {
+export const getTokensList = async (chain: Chain): Promise<ERC20Token[]> => {
   const localData = sessionStorage.getItem(`tokensList_${chain.id}`)
   if (localData) return JSON.parse(localData)
 
@@ -66,21 +67,21 @@ const getTokensList = async (chain: Chain): Promise<ERC20Token[]> => {
   return []
 }
 
-const getNativeToken = (TokensList: ERC20Token[]): ERC20Token[] =>
+export const getNativeToken = (TokensList: ERC20Token[]): ERC20Token[] =>
   TokensList.filter((token) => token.tags.includes('native'))
 
-const getPopularTokens = (TokensList: ERC20Token[]): any[] =>
+export const getPopularTokens = (TokensList: ERC20Token[]): any[] =>
   TokensList.filter((token) => POPULAR_COINS.includes(token.symbol))
 
-const getStableCoins = (TokensList: ERC20Token[]): ERC20Token[] =>
+export const getStableCoins = (TokensList: ERC20Token[]): ERC20Token[] =>
   TokensList.filter((token) => STABLE_COINS.includes(token.symbol))
 
-const getTokenRate = async (
+export const getTokenRate = async (
   fromToken: ERC20Token,
   toToken: ERC20Token,
   chain: Chain,
   xfee: number = 0
-): Promise<DEXQuote | undefined> => {
+): Promise<DEXRate | undefined> => {
   const GET_QUOTE_ENDPOINT = `${API_ENDPOINT_1INCH}/${chain.id}/quote`
   const params = {
     fee: xfee,
@@ -92,14 +93,14 @@ const getTokenRate = async (
     const response = await axios.get(GET_QUOTE_ENDPOINT, { params: params })
     const { toTokenAmount, estimatedGas } = response.data
 
-    return { rate: toTokenAmount, estimatedGas: estimatedGas, fee: xfee } as DEXQuote
+    return { rate: toTokenAmount, estimatedGas: estimatedGas, fee: xfee } as DEXRate
   } catch (error: any) {
     console.log(error)
     return
   }
 }
 
-const getTokenFromContract = async (contractAddress: Address, chain: Chain): Promise<ERC20Token | null> => {
+export const getTokenFromContract = async (contractAddress: Address, chain: Chain): Promise<ERC20Token | null> => {
   const provider = getProvider({ chainId: chain.id })
 
   const contract = getContract({
@@ -123,7 +124,7 @@ const getTokenFromContract = async (contractAddress: Address, chain: Chain): Pro
   return null
 }
 
-const getCoinsList = async (include_platform: boolean = false): Promise<CoinGecko[] | undefined> => {
+export const getCoinsList = async (include_platform: boolean = false): Promise<CoinGecko[] | undefined> => {
   const localData = sessionStorage.getItem('coinsList')
 
   if (localData) return JSON.parse(localData)
@@ -139,7 +140,7 @@ const getCoinsList = async (include_platform: boolean = false): Promise<CoinGeck
   return
 }
 
-const getCoinId = async (token: ERC20Token): Promise<string | undefined> => {
+export const getCoinId = async (token: ERC20Token): Promise<string | undefined> => {
   if (!token?.symbol) return
 
   const coinsList = await getCoinsList()
@@ -152,7 +153,7 @@ const getCoinId = async (token: ERC20Token): Promise<string | undefined> => {
   return
 }
 
-const getCoinPrice = async (token: ERC20Token, currency: string = 'usd'): Promise<CoinPrice | undefined> => {
+export const getCoinPrice = async (token: ERC20Token, currency: string = 'usd'): Promise<CoinPrice | undefined> => {
   const coinId = await getCoinId(token)
 
   if (!coinId) return
@@ -166,16 +167,4 @@ const getCoinPrice = async (token: ERC20Token, currency: string = 'usd'): Promis
   }
 
   return
-}
-
-export {
-  getStableCoins,
-  getPopularTokens,
-  getTokensList,
-  getNativeToken,
-  getTokenRate,
-  getTokenFromContract,
-  getCoinPrice,
-  getCoinsList,
-  getCoinId,
 }
