@@ -12,11 +12,13 @@ import { maskAddress } from '@/utils/Formatter'
 
 import { bsc as chain } from '@wagmi/chains'
 
+import { getFeeData } from '@/utils/Chains'
+
 const handler = async (_: NextApiRequest, res: NextApiResponse) => {
-  const tokens = await getTokensList(chain)
-  const popularCoins = getPopularTokens(tokens)
-  const nativetoken = getNativeToken(popularCoins)[0]
-  const stablecoin = getStableCoins(popularCoins)[0]
+  //const tokens = await getTokensList(chain)
+  //const popularCoins = getPopularTokens(tokens)
+  //const nativetoken = getNativeToken(popularCoins)[0]
+  //const stablecoin = getStableCoins(popularCoins)[0]
   // const { rate, fee } = await getTokenRate(nativetoken, stablecoin, chain)
   // // console.log('====chainId', chain.id)
   // // console.log('====popularCoins', popularCoins)
@@ -28,8 +30,12 @@ const handler = async (_: NextApiRequest, res: NextApiResponse) => {
   // const token = await getTokenFromContract('0xe9e7cea3dedca5984780bafc599bd69add087d56', chain)
   // console.log('====contract', token)
 
-  const price = await getCoinPrice(nativetoken)
-  console.log('====Price', price)
+  // const feeData = await getFeeData(chain)
+
+  // console.log(`feeData= ${feeData}`)
+
+  //const price = await getCoinPrice(nativetoken)
+  //console.log('====Price', price)
 
   // console.log(maskAddress('0xe9e7cea3dedca5984780bafc599bd69add087d56'))
   // console.log(maskAddress('0xe9e7cea3dedca5984780bafc599bd69add087d56', 0, 4))

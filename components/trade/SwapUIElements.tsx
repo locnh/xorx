@@ -11,7 +11,7 @@ const TokenButton = (props: any) => {
     <Button
       onClick={() => openModal(myToken)}
       leftIcon={
-        <Avatar src={`${ASSETS_CDN}/${token?.symbol.toLowerCase()}.webp`} size={24} radius="xl">
+        <Avatar src={token && `${ASSETS_CDN}/${token?.symbol.toLowerCase()}.webp`} size={24} radius="xl">
           {token?.symbol.slice(0, 3)}
         </Avatar>
       }

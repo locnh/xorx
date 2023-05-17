@@ -1,11 +1,12 @@
-import { ethers } from 'ethers'
-import { type FeeData } from '@ethersproject/abstract-provider'
 import { type Chain } from 'wagmi'
 import { mainnet, bsc, polygon, arbitrum, optimism, avalanche, fantom, zkSync } from 'wagmi/chains'
+import { fetchFeeData, FetchFeeDataResult } from '@wagmi/core'
 
 export const SUPPORTED_CHAINS = [mainnet, bsc, polygon, arbitrum, optimism, avalanche, fantom, zkSync]
 
-export { type Chain, FeeData }
+export { type Chain }
+
+export interface FeeData extends FetchFeeDataResult {}
 
 export const getChainById = (chainId: number | undefined): Chain | undefined =>
   SUPPORTED_CHAINS.find((chain) => chain.id === chainId)
@@ -47,16 +48,12 @@ export const getChainLogo = (chain: Chain): string => {
   return ''
 }
 
-export const getBlockNumber = async (blockchain: Chain): Promise<number> => {
-  const provider = new ethers.providers.JsonRpcProvider(blockchain.rpcUrls.default.http[0])
-  const blockNumber = await provider.getBlockNumber()
-
-  return blockNumber
-}
-
 export const getFeeData = async (blockchain: Chain): Promise<FeeData | undefined> => {
-  const provider = new ethers.providers.JsonRpcProvider(blockchain.rpcUrls.default.http[0])
-  const feeData: FeeData | undefined = await provider.getFeeData()
+  const feeData = await fetchFeeData({
+    chainId: blockchain.id,
+  })
 
-  return feeData
+  if (feeData) return feeData
+
+  return
 }

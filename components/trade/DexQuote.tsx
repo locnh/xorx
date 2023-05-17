@@ -19,12 +19,10 @@ export const DexQuote = (props: any) => {
   const [feeData, setFeeData] = useState<FeeData | undefined>()
 
   const networkFee = useMemo(() => {
-    if (feeData && quote) {
+    if (feeData?.gasPrice && quote) {
       console.log(feeData)
-      if (feeData.lastBaseFeePerGas && feeData.maxPriorityFeePerGas)
-        return feeData.lastBaseFeePerGas.add(feeData.maxPriorityFeePerGas).toNumber() * quote.estimatedGas
 
-      return feeData.maxFeePerGas && feeData.maxFeePerGas.toNumber() * quote.estimatedGas
+      return feeData.gasPrice.toNumber() * quote.estimatedGas
     }
   }, [feeData, quote])
 
