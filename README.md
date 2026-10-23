@@ -3,7 +3,7 @@ This is a Boilerplate for EVM dApp built on [Next.js](https://nextjs.org/) proje
 
 ## Demo
 Main branch will be released at this point
-* [https://evm-boilerplate.vercel.app/](https://evm-boilerplate.vercel.app/)
+* [https://xorx.vercel.app/](https://xorx.vercel.app/)
 
 # ⭐️ `Star us`
 
